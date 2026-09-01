@@ -165,5 +165,36 @@ select {
 }
 #btnMediaShow[hidden] { display: none; }
 
+#clock {
+  position: fixed;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 1rem;
+  background: rgba(22, 22, 31, 0.75);
+  border: 1px solid #2e2e3e;
+  border-radius: 999px;
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--accent2);
+  backdrop-filter: blur(6px);
+  text-shadow: 0 0 14px currentColor;
+}
+#clock[hidden] { display: none; }
+
+#clockDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+#clock.running #clockDot { animation: clockPulse 1s ease-in-out infinite; }
+@keyframes clockPulse { 50% { opacity: 0.2; } }
+
 body:fullscreen header,
 body:fullscreen #klangbildControls { display: none; }

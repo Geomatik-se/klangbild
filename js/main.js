@@ -1,5 +1,5 @@
 import { AudioEngine } from './audio-engine.js';
-import { PALETTES, setPalette } from './palettes.js';
+import { PALETTES, setPalette, palette } from './palettes.js';
 
 const engine = new AudioEngine();
 const stage = document.getElementById('stage');
@@ -7,6 +7,9 @@ const hint = document.getElementById('hint');
 const media = document.getElementById('media');
 const mediaBox = document.getElementById('mediaBox');
 const btnMediaShow = document.getElementById('btnMediaShow');
+const clock = document.getElementById('clock');
+const clockTime = document.getElementById('clockTime');
+let systemStart = null; // Startzeitpunkt bei System-Audio (Sekunden, performance.now-Basis)
 const fileInput = document.getElementById('fileInput');
 const kbControls = document.getElementById('klangbildControls');
 const kbStatus = document.getElementById('kbStatus');
@@ -55,6 +58,8 @@ function loadFile(file) {
   media.src = mediaURL;
   mediaBox.classList.add('visible');
   btnMediaShow.hidden = true;
+  systemStart = null;
+  clock.hidden = false;
   try {
     engine.useMediaElement(media);
   } catch (err) {
@@ -91,6 +96,8 @@ document.getElementById('btnSystem').addEventListener('click', async () => {
     mediaBox.classList.remove('visible');
     btnMediaShow.hidden = true;
     currentFile = null;
+    systemStart = performance.now() / 1000;
+    clock.hidden = false;
     hideHint();
     if (currentMode === 'klangbild') {
       kbStatus.textContent = 'Hinweis: Das statische Klangbild braucht eine geladene Datei.';
@@ -159,6 +166,7 @@ paletteSelect.addEventListener('change', () => {
   // Live-Visualizer lesen die Palette pro Frame; 3D braucht einen Anstoß,
   // das statische Klangbild ein erneutes Rendern.
   if (current && current.applyPalette) current.applyPalette();
+  applyClockColor();
   if (currentMode === 'klangbild' && current && current.off) {
     kbStatus.textContent = 'Palette geändert – „Klangbild erzeugen" wendet sie an.';
   }
@@ -173,11 +181,36 @@ document.getElementById('btnFullscreen').addEventListener('click', () => {
   else document.body.requestFullscreen();
 });
 
+// ---------- Abspiel-Uhr ----------
+function updateClock() {
+  let seconds = null;
+  let running = false;
+  if (systemStart !== null) {
+    seconds = performance.now() / 1000 - systemStart;
+    running = true;
+  } else if (currentFile) {
+    seconds = media.currentTime;
+    running = !media.paused && !media.ended;
+  }
+  if (seconds === null) return;
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  const text = `${m}:${String(s).padStart(2, '0')}`;
+  if (clockTime.textContent !== text) clockTime.textContent = text;
+  clock.classList.toggle('running', running);
+}
+
+function applyClockColor() {
+  clock.style.color = palette().accent;
+}
+applyClockColor();
+
 // ---------- Render-Schleife ----------
 function loop() {
   requestAnimationFrame(loop);
   const f = engine.update();
   if (current) current.update(f);
+  updateClock();
 }
 
 setMode('bars');
