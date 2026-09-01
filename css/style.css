@@ -1,0 +1,133 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0b0b12;
+  --panel: #16161f;
+  --accent: #7c5cff;
+  --accent2: #00d4ff;
+  --text: #e8e8f0;
+  --muted: #8a8a9a;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+body { display: flex; flex-direction: column; }
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--panel);
+  border-bottom: 1px solid #23232f;
+  flex-wrap: wrap;
+  z-index: 10;
+}
+
+h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+h1 span { color: var(--accent); }
+
+.group { display: flex; gap: 0.35rem; }
+.modes { margin-left: auto; }
+
+button {
+  background: #22222e;
+  color: var(--text);
+  border: 1px solid #2e2e3e;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+button:hover { background: #2c2c3a; }
+button:disabled { opacity: 0.4; cursor: default; }
+
+.modes button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+#btnFullscreen { font-size: 1rem; }
+
+#stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#hint {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  color: var(--muted);
+  pointer-events: none;
+  padding: 1rem;
+}
+#hint strong { color: var(--text); font-size: 1.3rem; }
+#hint .small { font-size: 0.8rem; max-width: 32rem; }
+#hint em { color: var(--accent2); font-style: normal; }
+
+body.drag #stage { outline: 3px dashed var(--accent); outline-offset: -3px; }
+
+#klangbildControls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  background: var(--panel);
+  border-top: 1px solid #23232f;
+  font-size: 0.9rem;
+}
+#klangbildControls[hidden] { display: none; }
+#klangbildControls select {
+  background: #22222e;
+  color: var(--text);
+  border: 1px solid #2e2e3e;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+#kbStatus { color: var(--muted); font-size: 0.8rem; }
+
+#media {
+  position: fixed;
+  right: 0.75rem;
+  bottom: 3.5rem;
+  width: 340px;
+  max-height: 220px;
+  background: #000;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  z-index: 20;
+  display: none;
+}
+#media.visible { display: block; }
+
+body:fullscreen header,
+body:fullscreen #klangbildControls { display: none; }

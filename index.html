@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klangbild – Musik-Visualisierer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Klang<span>bild</span></h1>
+
+    <div class="group sources">
+      <button id="btnFile" title="Audio- oder Videodatei laden (MP3, WAV, OGG, MP4)">🎵 Datei laden</button>
+      <button id="btnSystem" title="Visualisiert, was gerade am PC abgespielt wird (Chrome/Edge)">🖥️ System-Audio</button>
+    </div>
+
+    <nav class="group modes">
+      <button data-mode="bars" class="active">Klassisch</button>
+      <button data-mode="particles">Partikel</button>
+      <button data-mode="scene3d">3D</button>
+      <button data-mode="klangbild">Klangbild</button>
+    </nav>
+
+    <button id="btnFullscreen" title="Vollbild">⛶</button>
+  </header>
+
+  <main id="stage">
+    <div id="hint">
+      <p><strong>Willkommen bei Klangbild!</strong></p>
+      <p>Ziehe eine Musik- oder Videodatei hierher<br>oder klicke auf <em>Datei laden</em>.</p>
+      <p class="small">Mit <em>System-Audio</em> kannst du visualisieren, was gerade am PC läuft
+        (Chrome/Edge: Bildschirm oder Tab teilen und „Audio teilen" ankreuzen).</p>
+    </div>
+  </main>
+
+  <div id="klangbildControls" hidden>
+    <label>Stil:
+      <select id="kbStyle">
+        <option value="circle">Kreis-Fingerabdruck</option>
+        <option value="spectro">Spektrogramm</option>
+      </select>
+    </label>
+    <button id="btnRender">Klangbild erzeugen</button>
+    <button id="btnExport" disabled>PNG exportieren</button>
+    <span id="kbStatus"></span>
+  </div>
+
+  <video id="media" controls playsinline></video>
+
+  <input type="file" id="fileInput" accept="audio/*,video/*" hidden>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
