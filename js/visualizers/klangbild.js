@@ -60,11 +60,22 @@ export class KlangbildVisualizer extends Visualizer {
   constructor(container, engine) {
     super(container, engine);
     this.g = this.canvas.getContext('2d');
-    this.off = null; // Offscreen-Canvas mit dem fertigen Bild
+    this.off = null;   // Offscreen-Canvas mit dem fertigen Bild
+    this.geom = null;  // Geometrie des Bildes für die Abspielmarke
+    this.media = document.getElementById('media');
+    this._lastT = -1;
     this._blit();
   }
 
-  update() {} // statisch – nichts pro Frame zu tun
+  // Das Bild selbst ist statisch; pro Frame wird nur die Abspielmarke
+  // an der aktuellen Wiedergabeposition nachgeführt.
+  update() {
+    if (!this.off || !this.geom || !this.media.duration) return;
+    const t = this.media.currentTime / this.media.duration;
+    if (t === this._lastT) return;
+    this._lastT = t;
+    this._blit();
+  }
 
   resize() {
     super.resize();
@@ -85,7 +96,33 @@ export class KlangbildVisualizer extends Visualizer {
     // Eingepasst zeichnen (Letterbox)
     const s = Math.min(w / this.off.width, h / this.off.height);
     const dw = this.off.width * s, dh = this.off.height * s;
-    g.drawImage(this.off, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    const dx = (w - dw) / 2, dy = (h - dh) / 2;
+    g.drawImage(this.off, dx, dy, dw, dh);
+    this._drawPlayhead(dx, dy, s);
+  }
+
+  // Abspielmarke: Linie im Spektrogramm bzw. rotierender Zeiger im Kreis.
+  _drawPlayhead(dx, dy, s) {
+    if (!this.geom || !this.media.duration) return;
+    const t = Math.min(1, this.media.currentTime / this.media.duration);
+    const g = this.g, geo = this.geom;
+    g.save();
+    g.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    g.lineWidth = Math.max(1.5, 2 * this.dpr * s);
+    g.shadowColor = '#00d4ff';
+    g.shadowBlur = 8 * this.dpr * s;
+    g.beginPath();
+    if (geo.type === 'spectro') {
+      const x = dx + t * this.off.width * s;
+      g.moveTo(x, dy + geo.top * s);
+      g.lineTo(x, dy + geo.bottom * s);
+    } else {
+      const a = t * Math.PI * 2 - Math.PI / 2;
+      g.moveTo(dx + (geo.cx + Math.cos(a) * geo.rIn) * s, dy + (geo.cy + Math.sin(a) * geo.rIn) * s);
+      g.lineTo(dx + (geo.cx + Math.cos(a) * geo.rOut) * s, dy + (geo.cy + Math.sin(a) * geo.rOut) * s);
+    }
+    g.stroke();
+    g.restore();
   }
 
   async _decode(file) {
@@ -187,7 +224,9 @@ export class KlangbildVisualizer extends Visualizer {
     }
 
     this._label(g, name, duration, W, H);
+    this.geom = { type: 'spectro', top: specTop, bottom: specBottom };
     this.off = off;
+    this._lastT = -1;
   }
 
   async _renderCircle(mono, name, duration, onStatus) {
@@ -256,7 +295,9 @@ export class KlangbildVisualizer extends Visualizer {
     g.font = '30px "Segoe UI", sans-serif';
     g.fillText(`${min}:${String(sec).padStart(2, '0')}`, cx, cy + 44);
 
+    this.geom = { type: 'circle', cx, cy, rIn: rBase - rMax * 0.6, rOut: rBase + rMax };
     this.off = off;
+    this._lastT = -1;
   }
 
   async exportPNG(name) {
