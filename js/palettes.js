@@ -55,6 +55,33 @@ export const PALETTES = {
   },
 };
 
+// Themes: Hintergrund- und Textfarben für die Visualizer (die UI-Farben
+// stehen als CSS-Variablen in style.css und wechseln über body.light).
+export const THEMES = {
+  dark: {
+    lightMode: false,
+    bg: '#0b0b12', bgRGB: '11, 11, 18',
+    ink: '#e8e8f0', inkRGB: '232, 232, 240',
+    muted: '#8a8a9a',
+  },
+  light: {
+    lightMode: true,
+    bg: '#f4f4f8', bgRGB: '244, 244, 248',
+    ink: '#1c1c28', inkRGB: '28, 28, 40',
+    muted: '#6a6a7a',
+  },
+};
+
+let currentTheme = THEMES.dark;
+
+export function setTheme(id) {
+  currentTheme = THEMES[id] || THEMES.dark;
+}
+
+export function theme() {
+  return currentTheme;
+}
+
 let current = PALETTES.spektrum;
 
 export function setPalette(id) {

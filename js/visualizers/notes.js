@@ -1,5 +1,5 @@
 import { Visualizer } from './visualizer.js';
-import { palette, hueAt } from '../palettes.js';
+import { palette, hueAt, theme } from '../palettes.js';
 
 // Noten-Visualizer: erkennt die dominante Tonhöhe im Spektrum und zeichnet
 // die Noten auf ein Notensystem (Violinschlüssel), das nach links durchläuft.
@@ -43,8 +43,10 @@ export class NotesVisualizer extends Visualizer {
 
   update(f) {
     const g = this.g, w = this.width, h = this.height;
-    g.fillStyle = '#0b0b12';
+    const th = theme();
+    g.fillStyle = th.bg;
     g.fillRect(0, 0, w, h);
+    const noteL = th.lightMode ? 42 : 62; // Notenhelligkeit je nach Modus
 
     const s = Math.min(w, h) * 0.045;          // Linienabstand
     const midY = h * 0.5;
@@ -53,7 +55,7 @@ export class NotesVisualizer extends Visualizer {
     const p = palette();
 
     // Notensystem
-    g.strokeStyle = 'rgba(232, 232, 240, 0.35)';
+    g.strokeStyle = `rgba(${th.inkRGB}, 0.35)`;
     g.lineWidth = Math.max(1, this.dpr);
     for (let i = 0; i < 5; i++) {
       const y = bottomLineY - i * s;
@@ -63,7 +65,7 @@ export class NotesVisualizer extends Visualizer {
       g.stroke();
     }
     // Violinschlüssel
-    g.fillStyle = 'rgba(232, 232, 240, 0.6)';
+    g.fillStyle = `rgba(${th.inkRGB}, 0.6)`;
     g.font = `${s * 4.4}px "Segoe UI Symbol", serif`;
     g.textAlign = 'left';
     g.textBaseline = 'middle';
@@ -105,7 +107,7 @@ export class NotesVisualizer extends Visualizer {
       const y = bottomLineY - (total - 30) * s / 2; // 30 = E4 auf der untersten Linie
 
       // Hilfslinien ober-/unterhalb des Systems
-      g.strokeStyle = 'rgba(232, 232, 240, 0.3)';
+      g.strokeStyle = `rgba(${th.inkRGB}, 0.3)`;
       for (let t = 28; t >= total; t -= 2) {       // unterhalb (C4 = 28 usw.)
         const ly = bottomLineY - (t - 30) * s / 2;
         g.beginPath();
@@ -124,7 +126,7 @@ export class NotesVisualizer extends Visualizer {
       // Farbe aus der Palette: tiefe Töne → Anfang, hohe → Ende des Verlaufs
       const hue = hueAt(Math.min(1, Math.max(0, (n.midi - 40) / 44)));
       const alpha = Math.min(1, (SCROLL_SECONDS - age) / 1.5);
-      g.fillStyle = `hsla(${hue}, ${p.sat}%, 62%, ${alpha})`;
+      g.fillStyle = `hsla(${hue}, ${p.sat}%, ${noteL}%, ${alpha})`;
       g.strokeStyle = g.fillStyle;
 
       // Notenkopf (leicht gedrehte Ellipse) + Hals
@@ -160,11 +162,11 @@ export class NotesVisualizer extends Visualizer {
     if (this._heldMidi >= 0) {
       const pc = ((this._heldMidi % 12) + 12) % 12;
       const hue = hueAt(Math.min(1, Math.max(0, (this._heldMidi - 40) / 44)));
-      g.fillStyle = `hsl(${hue}, ${p.sat}%, 65%)`;
+      g.fillStyle = `hsl(${hue}, ${p.sat}%, ${th.lightMode ? 45 : 65}%)`;
       g.font = `600 ${s * 2.2}px "Segoe UI", sans-serif`;
       g.fillText(`${NAMES_DE[pc]}${Math.floor(this._heldMidi / 12) - 1}`, w - s, s);
     } else {
-      g.fillStyle = 'rgba(138, 138, 154, 0.6)';
+      g.fillStyle = `rgba(${th.inkRGB}, 0.4)`;
       g.font = `600 ${s * 2.2}px "Segoe UI", sans-serif`;
       g.fillText('–', w - s, s);
     }

@@ -1,5 +1,5 @@
 import { Visualizer } from './visualizer.js';
-import { palette, hueAt } from '../palettes.js';
+import { palette, hueAt, theme } from '../palettes.js';
 
 // Klassischer Visualizer: Frequenz-Balken mit Farbverlauf + Wellenform-Linie.
 export class BarsVisualizer extends Visualizer {
@@ -10,7 +10,7 @@ export class BarsVisualizer extends Visualizer {
 
   update(f) {
     const g = this.g, w = this.width, h = this.height;
-    g.fillStyle = '#0b0b12';
+    g.fillStyle = theme().bg;
     g.fillRect(0, 0, w, h);
     if (!f.freq) return;
 

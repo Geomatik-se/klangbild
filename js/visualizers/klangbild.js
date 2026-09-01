@@ -1,5 +1,5 @@
 import { Visualizer } from './visualizer.js';
-import { palette, hueAt, heatColor } from '../palettes.js';
+import { palette, hueAt, heatColor, theme } from '../palettes.js';
 
 // Statisches Klangbild: dekodiert den ganzen Song und rendert ihn als ein Bild –
 // wahlweise als Spektrogramm oder als kreisförmigen "Song-Fingerabdruck".
@@ -66,12 +66,17 @@ export class KlangbildVisualizer extends Visualizer {
     if (this.g) this._blit();
   }
 
+  // Wird beim Paletten-/Theme-Wechsel von außen aufgerufen: Hintergrund neu zeichnen.
+  applyPalette() {
+    this._blit();
+  }
+
   _blit() {
     const g = this.g, w = this.width, h = this.height;
-    g.fillStyle = '#0b0b12';
+    g.fillStyle = theme().bg;
     g.fillRect(0, 0, w, h);
     if (!this.off) {
-      g.fillStyle = '#8a8a9a';
+      g.fillStyle = theme().muted;
       g.font = `${16 * this.dpr}px "Segoe UI", sans-serif`;
       g.textAlign = 'center';
       g.fillText('Datei laden und unten auf „Klangbild erzeugen" klicken.', w / 2, h / 2);

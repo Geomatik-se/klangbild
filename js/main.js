@@ -1,5 +1,5 @@
 import { AudioEngine } from './audio-engine.js';
-import { PALETTES, setPalette, palette } from './palettes.js';
+import { PALETTES, setPalette, palette, setTheme } from './palettes.js';
 
 const engine = new AudioEngine();
 const stage = document.getElementById('stage');
@@ -172,6 +172,27 @@ paletteSelect.addEventListener('change', () => {
   if (currentMode === 'klangbild' && current && current.off) {
     kbStatus.textContent = 'Palette geändert – „Klangbild erzeugen" wendet sie an.';
   }
+});
+
+// ---------- Heller/dunkler Modus ----------
+const btnTheme = document.getElementById('btnTheme');
+
+function applyTheme(id) {
+  document.body.classList.toggle('light', id === 'light');
+  setTheme(id);
+  btnTheme.textContent = id === 'light' ? '🌙' : '☀️';
+  // 3D-Szene muss Hintergrund/Nebel neu setzen
+  if (current && current.applyPalette) current.applyPalette();
+}
+
+try {
+  if (localStorage.getItem('klangbild-theme') === 'light') applyTheme('light');
+} catch (_) {}
+
+btnTheme.addEventListener('click', () => {
+  const next = document.body.classList.contains('light') ? 'dark' : 'light';
+  applyTheme(next);
+  try { localStorage.setItem('klangbild-theme', next); } catch (_) {}
 });
 
 // ---------- Modus-Umschaltung & Vollbild ----------

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Visualizer } from './visualizer.js';
-import { palette, hueAt } from '../palettes.js';
+import { palette, hueAt, theme } from '../palettes.js';
 
 // 3D-Visualizer: Frequenz-Ring aus Säulen um einen pulsierenden Ikosaeder,
 // Kamera kreist langsam um die Szene.
@@ -62,6 +62,9 @@ export class Scene3DVisualizer extends Visualizer {
   applyPalette() {
     const p = palette();
     const s = p.sat / 100;
+    const bg = new THREE.Color(theme().bg);
+    this.scene.background = bg;
+    this.scene.fog.color.copy(bg);
     this.core.material.color.setHSL(((hueAt(0.15) % 360) + 360) % 360 / 360, s, 0.55);
     this.core.material.emissive.setHSL(((hueAt(0.15) % 360) + 360) % 360 / 360, s, 0.18);
     this.wire.material.color.set(p.accent);

@@ -7,6 +7,24 @@
   --accent2: #00d4ff;
   --text: #e8e8f0;
   --muted: #8a8a9a;
+  --btn: #22222e;
+  --btn-hover: #2c2c3a;
+  --border: #2e2e3e;
+  --panel-glass: rgba(22, 22, 31, 0.7);
+  --ring-bg: rgba(232, 232, 240, 0.12);
+}
+
+body.light {
+  --bg: #f4f4f8;
+  --panel: #ffffff;
+  --accent2: #0090c0;
+  --text: #1c1c28;
+  --muted: #6a6a7a;
+  --btn: #ececf2;
+  --btn-hover: #dfdfea;
+  --border: #cfcfdd;
+  --panel-glass: rgba(255, 255, 255, 0.75);
+  --ring-bg: rgba(28, 28, 40, 0.12);
 }
 
 html, body {
@@ -25,7 +43,7 @@ header {
   gap: 1rem;
   padding: 0.5rem 1rem;
   background: var(--panel);
-  border-bottom: 1px solid #23232f;
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   z-index: 10;
 }
@@ -41,16 +59,16 @@ h1 span { color: var(--accent); }
 .modes { margin-left: auto; }
 
 button {
-  background: #22222e;
+  background: var(--btn);
   color: var(--text);
-  border: 1px solid #2e2e3e;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.45rem 0.85rem;
   font-size: 0.9rem;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
-button:hover { background: #2c2c3a; }
+button:hover { background: var(--btn-hover); }
 button:disabled { opacity: 0.4; cursor: default; }
 
 .modes button.active {
@@ -102,14 +120,14 @@ body.drag #stage { outline: 3px dashed var(--accent); outline-offset: -3px; }
   gap: 0.6rem;
   padding: 0.5rem 1rem;
   background: var(--panel);
-  border-top: 1px solid #23232f;
+  border-top: 1px solid var(--border);
   font-size: 0.9rem;
 }
 #klangbildControls[hidden] { display: none; }
 select {
-  background: #22222e;
+  background: var(--btn);
   color: var(--text);
-  border: 1px solid #2e2e3e;
+  border: 1px solid var(--border);
   border-radius: 6px;
   padding: 0.3rem 0.5rem;
   font-size: 0.9rem;
@@ -147,7 +165,7 @@ select {
   border-radius: 50%;
   font-size: 0.8rem;
   line-height: 1;
-  background: #2c2c3a;
+  background: var(--btn-hover);
 }
 
 #btnMediaShow {
@@ -177,7 +195,7 @@ select {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(22, 22, 31, 0.7);
+  background: var(--panel-glass);
   backdrop-filter: blur(6px);
   color: var(--accent2);
   font-size: 1.2rem;
@@ -198,7 +216,7 @@ select {
   transform: rotate(-90deg); /* Ring beginnt oben */
 }
 #clock circle { fill: none; stroke-width: 6; }
-#clock .ringBg { stroke: rgba(232, 232, 240, 0.12); }
+#clock .ringBg { stroke: var(--ring-bg); }
 #clockRing {
   stroke: currentColor;
   stroke-linecap: round;

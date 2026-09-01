@@ -1,5 +1,5 @@
 import { Visualizer } from './visualizer.js';
-import { palette, hueAt } from '../palettes.js';
+import { palette, hueAt, theme } from '../palettes.js';
 
 // Generativer Visualizer: Partikel strömen aus der Mitte, Beats geben Schub,
 // die Tonlage (Bass/Mitten/Höhen) bestimmt die Farbe.
@@ -32,7 +32,8 @@ export class ParticlesVisualizer extends Visualizer {
     const g = this.g, w = this.width, h = this.height;
 
     // Halbtransparent übermalen → Leuchtspuren
-    g.fillStyle = 'rgba(11, 11, 18, 0.18)';
+    const t = theme();
+    g.fillStyle = `rgba(${t.bgRGB}, 0.18)`;
     g.fillRect(0, 0, w, h);
     if (!f.freq) return;
 
@@ -46,7 +47,8 @@ export class ParticlesVisualizer extends Visualizer {
     if (f.level > 0.03) this._spawn(Math.round(f.level * 6), (2 + f.mid * 10) * this.dpr, hue);
     if (f.beat) this._spawn(60 + Math.round(f.bass * 80), (6 + f.bass * 18) * this.dpr, hue);
 
-    g.globalCompositeOperation = 'lighter';
+    // Additives Leuchten nur auf dunklem Grund (auf hellem würde es ausbleichen)
+    g.globalCompositeOperation = t.lightMode ? 'source-over' : 'lighter';
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
       p.x += p.vx;
@@ -59,7 +61,7 @@ export class ParticlesVisualizer extends Visualizer {
         continue;
       }
       g.globalAlpha = p.life * 0.85;
-      g.fillStyle = `hsl(${p.hue}, ${palette().sat}%, ${45 + p.life * 25}%)`;
+      g.fillStyle = `hsl(${p.hue}, ${palette().sat}%, ${t.lightMode ? 38 + p.life * 8 : 45 + p.life * 25}%)`;
       g.beginPath();
       g.arc(p.x, p.y, p.size * (0.5 + p.life), 0, Math.PI * 2);
       g.fill();
@@ -81,7 +83,7 @@ export class ParticlesVisualizer extends Visualizer {
       i === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
     }
     g.closePath();
-    g.strokeStyle = `hsla(${hue}, ${palette().sat}%, 65%, 0.8)`;
+    g.strokeStyle = `hsla(${hue}, ${palette().sat}%, ${t.lightMode ? 42 : 65}%, 0.8)`;
     g.lineWidth = 2 * this.dpr;
     g.stroke();
     g.globalCompositeOperation = 'source-over';
