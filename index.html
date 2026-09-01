@@ -58,7 +58,10 @@
   </div>
 
   <div id="clock" hidden>
-    <span id="clockDot"></span>
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="ringBg" cx="50" cy="50" r="44"></circle>
+      <circle id="clockRing" cx="50" cy="50" r="44"></circle>
+    </svg>
     <span id="clockTime">0:00</span>
   </div>
 

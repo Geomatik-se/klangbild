@@ -9,6 +9,8 @@ const mediaBox = document.getElementById('mediaBox');
 const btnMediaShow = document.getElementById('btnMediaShow');
 const clock = document.getElementById('clock');
 const clockTime = document.getElementById('clockTime');
+const clockRing = document.getElementById('clockRing');
+const CLOCK_CIRC = 276.46; // Umfang des Fortschrittsrings (r=44 im viewBox 100)
 let systemStart = null; // Startzeitpunkt bei System-Audio (Sekunden, performance.now-Basis)
 const fileInput = document.getElementById('fileInput');
 const kbControls = document.getElementById('klangbildControls');
@@ -198,6 +200,15 @@ function updateClock() {
   const text = `${m}:${String(s).padStart(2, '0')}`;
   if (clockTime.textContent !== text) clockTime.textContent = text;
   clock.classList.toggle('running', running);
+
+  // Fortschrittsring: bei Dateien über die Songlänge, bei System-Audio pro Minute
+  let progress;
+  if (currentFile && media.duration) {
+    progress = Math.min(1, seconds / media.duration);
+  } else {
+    progress = (seconds % 60) / 60;
+  }
+  clockRing.style.strokeDashoffset = CLOCK_CIRC * (1 - progress);
 }
 
 function applyClockColor() {
