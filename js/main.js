@@ -5,6 +5,8 @@ const engine = new AudioEngine();
 const stage = document.getElementById('stage');
 const hint = document.getElementById('hint');
 const media = document.getElementById('media');
+const mediaBox = document.getElementById('mediaBox');
+const btnMediaShow = document.getElementById('btnMediaShow');
 const fileInput = document.getElementById('fileInput');
 const kbControls = document.getElementById('klangbildControls');
 const kbStatus = document.getElementById('kbStatus');
@@ -51,7 +53,8 @@ function loadFile(file) {
   if (mediaURL) URL.revokeObjectURL(mediaURL);
   mediaURL = URL.createObjectURL(file);
   media.src = mediaURL;
-  media.classList.add('visible');
+  mediaBox.classList.add('visible');
+  btnMediaShow.hidden = true;
   try {
     engine.useMediaElement(media);
   } catch (err) {
@@ -85,7 +88,8 @@ document.getElementById('btnSystem').addEventListener('click', async () => {
   try {
     await engine.useSystemAudio();
     media.pause();
-    media.classList.remove('visible');
+    mediaBox.classList.remove('visible');
+    btnMediaShow.hidden = true;
     currentFile = null;
     hideHint();
     if (currentMode === 'klangbild') {
@@ -121,6 +125,16 @@ document.getElementById('btnRender').addEventListener('click', async () => {
 
 btnExport.addEventListener('click', () => {
   if (current && current.exportPNG) current.exportPNG(currentFile ? currentFile.name : 'song');
+});
+
+// Liedsteuerung aus- und einblenden (die Wiedergabe läuft dabei weiter)
+document.getElementById('btnMediaClose').addEventListener('click', () => {
+  mediaBox.classList.remove('visible');
+  btnMediaShow.hidden = false;
+});
+btnMediaShow.addEventListener('click', () => {
+  mediaBox.classList.add('visible');
+  btnMediaShow.hidden = true;
 });
 
 // ---------- Farbpalette ----------

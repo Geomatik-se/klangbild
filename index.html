@@ -57,7 +57,11 @@
     <span id="kbStatus"></span>
   </div>
 
-  <video id="media" controls playsinline></video>
+  <div id="mediaBox">
+    <button type="button" id="btnMediaClose" title="Liedsteuerung ausblenden">✕</button>
+    <video id="media" controls playsinline></video>
+  </div>
+  <button type="button" id="btnMediaShow" title="Liedsteuerung einblenden" hidden>♪</button>
 
   <input type="file" id="fileInput" accept="audio/*,video/*" hidden>
 
