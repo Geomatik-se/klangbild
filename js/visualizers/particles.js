@@ -1,4 +1,5 @@
 import { Visualizer } from './visualizer.js';
+import { palette, hueAt } from '../palettes.js';
 
 // Generativer Visualizer: Partikel strömen aus der Mitte, Beats geben Schub,
 // die Tonlage (Bass/Mitten/Höhen) bestimmt die Farbe.
@@ -35,11 +36,11 @@ export class ParticlesVisualizer extends Visualizer {
     g.fillRect(0, 0, w, h);
     if (!f.freq) return;
 
-    // Farbwahl: dominantes Band bestimmt den Grundton
-    let hue = 210;
-    if (f.bass >= f.mid && f.bass >= f.treble) hue = 275;      // Bass → violett
-    else if (f.treble >= f.mid) hue = 55;                       // Höhen → gelb
-    else hue = 175;                                             // Mitten → türkis
+    // Farbwahl: dominantes Band bestimmt die Position im Paletten-Verlauf
+    let hue;
+    if (f.bass >= f.mid && f.bass >= f.treble) hue = hueAt(0.15);  // Bass → Anfang
+    else if (f.treble >= f.mid) hue = hueAt(0.85);                 // Höhen → Ende
+    else hue = hueAt(0.5);                                         // Mitten → Mitte
 
     // Laufende Emission je nach Lautstärke, Beats geben Explosionen
     if (f.level > 0.03) this._spawn(Math.round(f.level * 6), (2 + f.mid * 10) * this.dpr, hue);
@@ -58,7 +59,7 @@ export class ParticlesVisualizer extends Visualizer {
         continue;
       }
       g.globalAlpha = p.life * 0.85;
-      g.fillStyle = `hsl(${p.hue}, 90%, ${45 + p.life * 25}%)`;
+      g.fillStyle = `hsl(${p.hue}, ${palette().sat}%, ${45 + p.life * 25}%)`;
       g.beginPath();
       g.arc(p.x, p.y, p.size * (0.5 + p.life), 0, Math.PI * 2);
       g.fill();
@@ -80,7 +81,7 @@ export class ParticlesVisualizer extends Visualizer {
       i === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
     }
     g.closePath();
-    g.strokeStyle = `hsla(${hue}, 95%, 65%, 0.8)`;
+    g.strokeStyle = `hsla(${hue}, ${palette().sat}%, 65%, 0.8)`;
     g.lineWidth = 2 * this.dpr;
     g.stroke();
     g.globalCompositeOperation = 'source-over';

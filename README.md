@@ -13,6 +13,10 @@ Ein Musik-Visualisierer im Browser – ohne Installation, ohne Build-Tools.
   - **Klangbild** – der ganze Song als ein statisches Bild (Kreis-Fingerabdruck oder
     Spektrogramm), exportierbar als PNG
 
+- **Fünf Farbpaletten** (Spektrum, Nordlicht, Feuer, Ozean, Monochrom), die auf alle
+  Visualisierungen wirken; die Auswahl wird im Browser gemerkt. Eigene Paletten lassen
+  sich in `js/palettes.js` als einfache Einträge ergänzen.
+
 Die Musik wird ausschließlich lokal im Browser verarbeitet – nichts wird hochgeladen.
 
 ## Starten

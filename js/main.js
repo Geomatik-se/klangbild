@@ -1,4 +1,5 @@
 import { AudioEngine } from './audio-engine.js';
+import { PALETTES, setPalette } from './palettes.js';
 
 const engine = new AudioEngine();
 const stage = document.getElementById('stage');
@@ -119,6 +120,33 @@ document.getElementById('btnRender').addEventListener('click', async () => {
 
 btnExport.addEventListener('click', () => {
   if (current && current.exportPNG) current.exportPNG(currentFile ? currentFile.name : 'song');
+});
+
+// ---------- Farbpalette ----------
+const paletteSelect = document.getElementById('paletteSelect');
+for (const [id, p] of Object.entries(PALETTES)) {
+  const opt = document.createElement('option');
+  opt.value = id;
+  opt.textContent = p.name;
+  paletteSelect.appendChild(opt);
+}
+try {
+  const saved = localStorage.getItem('klangbild-palette');
+  if (saved && PALETTES[saved]) {
+    setPalette(saved);
+    paletteSelect.value = saved;
+  }
+} catch (_) { /* localStorage nicht verfügbar – Standardpalette */ }
+
+paletteSelect.addEventListener('change', () => {
+  setPalette(paletteSelect.value);
+  try { localStorage.setItem('klangbild-palette', paletteSelect.value); } catch (_) {}
+  // Live-Visualizer lesen die Palette pro Frame; 3D braucht einen Anstoß,
+  // das statische Klangbild ein erneutes Rendern.
+  if (current && current.applyPalette) current.applyPalette();
+  if (currentMode === 'klangbild' && current && current.off) {
+    kbStatus.textContent = 'Palette geändert – „Klangbild erzeugen" wendet sie an.';
+  }
 });
 
 // ---------- Modus-Umschaltung & Vollbild ----------

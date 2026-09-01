@@ -1,4 +1,5 @@
 import { Visualizer } from './visualizer.js';
+import { palette, hueAt, heatColor } from '../palettes.js';
 
 // Statisches Klangbild: dekodiert den ganzen Song und rendert ihn als ein Bild –
 // wahlweise als Spektrogramm oder als kreisförmigen "Song-Fingerabdruck".
@@ -37,23 +38,6 @@ function fft(re, im) {
       }
     }
   }
-}
-
-// Farbverlauf für das Spektrogramm: schwarz → violett → orange → gelb → weiß.
-function heatColor(t) {
-  const stops = [
-    [0.0, 8, 8, 18], [0.25, 70, 20, 110], [0.5, 200, 60, 60],
-    [0.75, 255, 170, 40], [1.0, 255, 255, 230],
-  ];
-  for (let i = 1; i < stops.length; i++) {
-    if (t <= stops[i][0]) {
-      const [t0, r0, g0, b0] = stops[i - 1];
-      const [t1, r1, g1, b1] = stops[i];
-      const k = (t - t0) / (t1 - t0);
-      return [r0 + (r1 - r0) * k, g0 + (g1 - g0) * k, b0 + (b1 - b0) * k];
-    }
-  }
-  return [255, 255, 230];
 }
 
 export class KlangbildVisualizer extends Visualizer {
@@ -109,7 +93,7 @@ export class KlangbildVisualizer extends Visualizer {
     g.save();
     g.strokeStyle = 'rgba(255, 255, 255, 0.9)';
     g.lineWidth = Math.max(1.5, 2 * this.dpr * s);
-    g.shadowColor = '#00d4ff';
+    g.shadowColor = palette().accent;
     g.shadowBlur = 8 * this.dpr * s;
     g.beginPath();
     if (geo.type === 'spectro') {
@@ -274,9 +258,9 @@ export class KlangbildVisualizer extends Visualizer {
       const amp = Math.pow(rms[s] / (peak || 1), 0.7); // Dynamik anheben
       const angle = (s / slices) * Math.PI * 2 - Math.PI / 2; // Start oben, im Uhrzeigersinn
       const len = amp * rMax;
-      const hue = 265 - (s / slices) * 265; // violett → … → rot über die Songdauer
+      const hue = hueAt(s / slices); // Paletten-Verlauf über die Songdauer
       const light = 35 + Math.min(1, zcr[s] * 12) * 35;
-      g.strokeStyle = `hsla(${hue}, 85%, ${light}%, 0.9)`;
+      g.strokeStyle = `hsla(${hue}, ${palette().sat}%, ${light}%, 0.9)`;
       g.lineWidth = (Math.PI * 2 * rBase) / slices * 0.9;
       g.beginPath();
       g.moveTo(cx + Math.cos(angle) * (rBase - len * 0.55), cy + Math.sin(angle) * (rBase - len * 0.55));

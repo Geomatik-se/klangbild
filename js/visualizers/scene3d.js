@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Visualizer } from './visualizer.js';
+import { palette, hueAt } from '../palettes.js';
 
 // 3D-Visualizer: Frequenz-Ring aus Säulen um einen pulsierenden Ikosaeder,
 // Kamera kreist langsam um die Szene.
@@ -17,16 +18,13 @@ export class Scene3DVisualizer extends Visualizer {
     // Zentraler Körper
     this.core = new THREE.Mesh(
       new THREE.IcosahedronGeometry(3, 1),
-      new THREE.MeshStandardMaterial({
-        color: 0x7c5cff, emissive: 0x2a1a66, flatShading: true,
-        metalness: 0.3, roughness: 0.35,
-      })
+      new THREE.MeshStandardMaterial({ flatShading: true, metalness: 0.3, roughness: 0.35 })
     );
     this.scene.add(this.core);
 
     this.wire = new THREE.Mesh(
       new THREE.IcosahedronGeometry(3.6, 1),
-      new THREE.MeshBasicMaterial({ color: 0x00d4ff, wireframe: true, transparent: true, opacity: 0.25 })
+      new THREE.MeshBasicMaterial({ wireframe: true, transparent: true, opacity: 0.25 })
     );
     this.scene.add(this.wire);
 
@@ -35,11 +33,7 @@ export class Scene3DVisualizer extends Visualizer {
     this.bars = [];
     const barGeo = new THREE.BoxGeometry(0.5, 1, 0.5);
     for (let i = 0; i < this.barCount; i++) {
-      const hue = i / this.barCount;
-      const mat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color().setHSL(0.72 - hue * 0.55, 0.85, 0.55),
-        emissive: new THREE.Color().setHSL(0.72 - hue * 0.55, 0.85, 0.2),
-      });
+      const mat = new THREE.MeshStandardMaterial();
       const bar = new THREE.Mesh(barGeo, mat);
       const a = (i / this.barCount) * Math.PI * 2;
       bar.position.set(Math.cos(a) * 12, 0, Math.sin(a) * 12);
@@ -59,7 +53,23 @@ export class Scene3DVisualizer extends Visualizer {
 
     this.angle = 0;
     this.pulse = 0;
+    this.applyPalette();
     this._applySize();
+  }
+
+  // Färbt Kern, Drahtgitter und Ring nach der aktuellen Palette;
+  // wird auch beim Palettenwechsel von außen aufgerufen.
+  applyPalette() {
+    const p = palette();
+    const s = p.sat / 100;
+    this.core.material.color.setHSL(((hueAt(0.15) % 360) + 360) % 360 / 360, s, 0.55);
+    this.core.material.emissive.setHSL(((hueAt(0.15) % 360) + 360) % 360 / 360, s, 0.18);
+    this.wire.material.color.set(p.accent);
+    for (let i = 0; i < this.barCount; i++) {
+      const h = ((hueAt(i / this.barCount) % 360) + 360) % 360 / 360;
+      this.bars[i].material.color.setHSL(h, s, 0.55);
+      this.bars[i].material.emissive.setHSL(h, s, 0.2);
+    }
   }
 
   _applySize() {

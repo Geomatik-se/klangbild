@@ -1,4 +1,5 @@
 import { Visualizer } from './visualizer.js';
+import { palette, hueAt } from '../palettes.js';
 
 // Klassischer Visualizer: Frequenz-Balken mit Farbverlauf + Wellenform-Linie.
 export class BarsVisualizer extends Visualizer {
@@ -27,10 +28,11 @@ export class BarsVisualizer extends Visualizer {
       const v = sum / ((b - a) * 255 || 1);
 
       const barH = v * h * 0.85;
-      const hue = 260 - (i / barCount) * 200; // violett → türkis → grün
+      const p = palette();
+      const hue = hueAt(i / barCount);
       const grad = g.createLinearGradient(0, h, 0, h - barH);
-      grad.addColorStop(0, `hsl(${hue}, 85%, 45%)`);
-      grad.addColorStop(1, `hsl(${hue}, 95%, ${55 + v * 25}%)`);
+      grad.addColorStop(0, `hsl(${hue}, ${p.sat}%, 45%)`);
+      grad.addColorStop(1, `hsl(${hue}, ${p.sat}%, ${55 + v * 25}%)`);
       g.fillStyle = grad;
       g.fillRect(i * barW + barW * 0.12, h - barH, barW * 0.76, barH);
 
@@ -48,7 +50,7 @@ export class BarsVisualizer extends Visualizer {
       const y = h * 0.25 + ((f.wave[i] - 128) / 128) * h * 0.18;
       i === 0 ? g.moveTo(x, y) : g.lineTo(x, y);
     }
-    g.strokeStyle = f.beat ? '#ffffff' : '#00d4ff';
+    g.strokeStyle = f.beat ? '#ffffff' : palette().accent;
     g.lineWidth = (f.beat ? 3 : 1.5) * this.dpr;
     g.globalAlpha = 0.9;
     g.stroke();

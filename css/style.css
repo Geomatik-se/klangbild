@@ -106,12 +106,14 @@ body.drag #stage { outline: 3px dashed var(--accent); outline-offset: -3px; }
   font-size: 0.9rem;
 }
 #klangbildControls[hidden] { display: none; }
-#klangbildControls select {
+select {
   background: #22222e;
   color: var(--text);
   border: 1px solid #2e2e3e;
   border-radius: 6px;
   padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 #kbStatus { color: var(--muted); font-size: 0.8rem; }
 
