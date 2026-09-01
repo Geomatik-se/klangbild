@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Klangbild – Musik-Visualisierer</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='80' font-size='80'%3E%F0%9F%8E%B5%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
   <script type="importmap">
     {
@@ -18,20 +19,21 @@
     <h1>Klang<span>bild</span></h1>
 
     <div class="group sources">
-      <button id="btnFile" title="Audio- oder Videodatei laden (MP3, WAV, OGG, MP4)">🎵 Datei laden</button>
-      <button id="btnSystem" title="Visualisiert, was gerade am PC abgespielt wird (Chrome/Edge)">🖥️ System-Audio</button>
+      <button type="button" id="btnFile" title="Audio- oder Videodatei laden (MP3, WAV, OGG, MP4)">🎵 Datei laden</button>
+      <button type="button" id="btnSystem" title="Visualisiert, was gerade am PC abgespielt wird (Chrome/Edge)">🖥️ System-Audio</button>
     </div>
 
     <select id="paletteSelect" title="Farbpalette"></select>
 
     <nav class="group modes">
-      <button data-mode="bars" class="active">Klassisch</button>
-      <button data-mode="particles">Partikel</button>
-      <button data-mode="scene3d">3D</button>
-      <button data-mode="klangbild">Klangbild</button>
+      <button type="button" data-mode="bars" class="active">Klassisch</button>
+      <button type="button" data-mode="particles">Partikel</button>
+      <button type="button" data-mode="scene3d">3D</button>
+      <button type="button" data-mode="notes">Noten</button>
+      <button type="button" data-mode="klangbild">Klangbild</button>
     </nav>
 
-    <button id="btnFullscreen" title="Vollbild">⛶</button>
+    <button type="button" id="btnFullscreen" title="Vollbild">⛶</button>
   </header>
 
   <main id="stage">
@@ -50,8 +52,8 @@
         <option value="spectro">Spektrogramm</option>
       </select>
     </label>
-    <button id="btnRender">Klangbild erzeugen</button>
-    <button id="btnExport" disabled>PNG exportieren</button>
+    <button type="button" id="btnRender">Klangbild erzeugen</button>
+    <button type="button" id="btnExport" disabled>PNG exportieren</button>
     <span id="kbStatus"></span>
   </div>
 

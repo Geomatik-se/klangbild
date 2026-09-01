@@ -8,14 +8,15 @@ Ein Musik-Visualisierer im Browser – ohne Installation, ohne Build-Tools.
 
 - **Quellen:** Audio-/Videodateien (MP3, WAV, OGG, MP4) per Drag & Drop oder Dateiauswahl,
   außerdem **System-Audio** (alles, was gerade am PC läuft).
-- **Vier Visualisierungen:**
+- **Fünf Visualisierungen:**
   - **Klassisch** – Frequenz-Balken mit Wellenform
   - **Partikel** – generatives Partikelsystem, das auf Beats und Tonlage reagiert
   - **3D** – Three.js-Szene mit Frequenz-Ring und pulsierendem Kern
+  - **Noten** – erkannte Tonhöhen als Noten auf einem durchlaufenden Notensystem
   - **Klangbild** – der ganze Song als ein statisches Bild (Kreis-Fingerabdruck oder
     Spektrogramm), exportierbar als PNG
 
-- **Fünf Farbpaletten** (Spektrum, Nordlicht, Feuer, Ozean, Monochrom), die auf alle
+- **Sechs Farbpaletten** (Spektrum, Nordlicht, Feuer, Ozean, Wald, Monochrom), die auf alle
   Visualisierungen wirken; die Auswahl wird im Browser gemerkt. Eigene Paletten lassen
   sich in `js/palettes.js` als einfache Einträge ergänzen.
 

@@ -15,6 +15,7 @@ const loaders = {
   bars: () => import('./visualizers/bars.js').then(m => m.BarsVisualizer),
   particles: () => import('./visualizers/particles.js').then(m => m.ParticlesVisualizer),
   scene3d: () => import('./visualizers/scene3d.js').then(m => m.Scene3DVisualizer),
+  notes: () => import('./visualizers/notes.js').then(m => m.NotesVisualizer),
   klangbild: () => import('./visualizers/klangbild.js').then(m => m.KlangbildVisualizer),
 };
 
